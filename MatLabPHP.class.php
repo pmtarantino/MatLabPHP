@@ -146,19 +146,45 @@ class MatLabPHP{
 	@param: vector or matrix
 	@return: int
 	*/
-	public function length($Vector){
+	public function length($Vector,$Ret=0){
 		$Vector = $this->StringToVector($Vector);
-		return max(count($Vector),count($Vector[1]));
+		if($Ret == 0){
+			return max(count($Vector),count($Vector[1]));
+		}else{
+			$Rows = (isset($sumA[1])) ? count($sumA[1]) : 1;
+			return array(count($Vector),$Rows);
+		}
+	}
+
+	/*
+	Sum
+	@desc: Sumes two matrix or vectors or numbers
+	@param: two vector or matrix or numbers
+	@return: result
+	*/
+	public function sum($sumA,$sumB){
+		$sumA = $this->StringToVector($sumA);
+		$sumB = $this->StringToVector($sumB);
+		$LengthA = $this->length($sumA,1);
+		$LengthB = $this->length($sumB,1);
+
+		if($LengthA[0] != $LengthB[0] || $LengthA[1] != $LengthB[1]){
+			return $this->ErrorMsg('NotSameColsRows');
+			end();
+		}
+
+		$Cols = count($sumA);
+		$Rows = (isset($sumA[1])) ? count($sumA[1]) : 1;
+		$Matrix = array();
+		for($c=0;$c<$Cols;$c++){
+				for($r=0;$r<$Rows;$r++){
+					$Matrix[$c][$r] = ($sumA[$c][$r] + $sumB[$c][$r]);
+				}
+		}
+		return $Matrix;
+
 	}
 
 }
-
-$MatLab = new MatLabPHP();
-
-$EYE = $MatLab->eye(10,12);
-$ZEROS = $MatLab->zeros(3,2);
-$MATR = $MatLab->StringToVector("[3 1,2 4]");
-
-echo "<pre>";
-var_dump($MatLab->length($EYE));
 ?>
+
