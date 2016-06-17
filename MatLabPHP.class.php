@@ -57,8 +57,7 @@ class MatLabPHP{
 				$Cols = count($ReturnVector[0]);
 				foreach($ReturnVector as $Row){
 					if(count($Row) != $Cols){
-						return $this->ErrorMsg('NotSameColsRows');
-						end();
+						throw new Exception ($this->ErrorMsg('NotSameColsRows'));
 					}
 				}
 				return $ReturnVector;
@@ -66,8 +65,7 @@ class MatLabPHP{
 
 
 			else if($Vector[0] != "[" || $Vector[strlen($Vector)-1] != "]"){ // Checking good format of [ numbers ]
-				return $this->ErrorMsg('BadFormat');
-				end();
+				throw new Exception ($this->ErrorMsg('BadFormat'));
 			}
 
 			else{
@@ -78,8 +76,7 @@ class MatLabPHP{
 							if(is_numeric(trim($Value))){
 								$VectorArray[] = trim($Value);
 							}else{
-								return $this->ErrorMsg('NotNum');
-								end();
+								throw new Exception ($this->ErrorMsg('NotNum'));
 							}
 						}
 					}
@@ -99,8 +96,7 @@ class MatLabPHP{
 		$Cols = trim($Cols);
 		
 		if(!is_numeric($Cols) || !is_numeric($Rows)){
-			return $this->ErrorMsg('ArgsNum');
-			end();
+			throw new Exception ($this->ErrorMsg('ArgsNum'));
 		}
 
 		$Matrix = array();
@@ -125,8 +121,7 @@ class MatLabPHP{
 		$Cols = trim($Cols);
 		
 		if(!is_numeric($Cols) || !is_numeric($Rows)){
-			return $this->ErrorMsg('ArgsNum');
-			end();
+			throw new Exception ($this->ErrorMsg('ArgsNum'));
 		}
 
 		$Matrix = array();
@@ -169,15 +164,14 @@ class MatLabPHP{
 		$LengthB = $this->length($sumB,1);
 
 		if($LengthA[0] != $LengthB[0] || $LengthA[1] != $LengthB[1]){
-			return $this->ErrorMsg('NotSameColsRows');
-			end();
+			throw new Exception ($this->ErrorMsg('NotSameColsRows'));
 		}
 
 		$Cols = count($sumA);
 		$Rows = (isset($sumA[1])) ? count($sumA[1]) : 1;
 		$Matrix = array();
-		for($c=0;$c<$Cols;$c++){
-				for($r=0;$r<$Rows;$r++){
+		for($c=1;$c<=$Cols;$c++){
+				for($r=1;$r<=$Rows;$r++){
 					$Matrix[$c][$r] = ($sumA[$c][$r] + $sumB[$c][$r]);
 				}
 		}

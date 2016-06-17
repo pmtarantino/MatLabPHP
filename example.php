@@ -1,15 +1,19 @@
-<?
+<?php
 require_once('MatLabPHP.class.php');
-
-
-$MatLab = new MatLabPHP();
-
-$EYE = $MatLab->eye(10,12);
-$ZEROS = $MatLab->zeros(3,2);
-$MATR = $MatLab->StringToVector("[3 1;2 4]");
+require_once('linearAlg.class.php');
 
 echo "<pre>";
-var_dump($MatLab->sum('2','8'));
-var_dump($MatLab->sum('[1 1; 0 0 ]','[8 9; 1 2]'));
+$M = new Matrix("[3]");
+$e = Matrix::eye(2);
+$M->mult("[1]");
+var_dump($M->get());
+die();
+var_dump($M->get(), $M->size());
+
+$Z = Matrix::Zeros(2,2);
+var_dump($Z->get(), $Z->size());
+
+$E = Matrix::Eye(4);
+var_dump($E->get(1,1), $E->size());
 
 ?>
