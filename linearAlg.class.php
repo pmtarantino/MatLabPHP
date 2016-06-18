@@ -11,7 +11,7 @@ MatLabPHP
 
 class Matrix{
 
-	private $data;
+	protected $data;
 
 	public function __construct($init){
 		$this->data = self::StringToVector($init);
@@ -79,7 +79,7 @@ class Matrix{
 				foreach($Values as $Value){
 					if($Value != ""){
 						if(is_numeric(trim($Value))){
-							$VectorArray[] = trim($Value);
+							$VectorArray[] = floatval(trim($Value));
 						}else{
 							throw new Exception ($this->ErrorMsg('NotNum'));
 						}
@@ -160,6 +160,10 @@ class Matrix{
 		}
 	}
 
+	public function set($Col, $Row, $val){
+		$this->data[$Col][$Row] = floatval($val);
+	}
+
 	/*
 	size
 	@desc: Return quantity of columns and rows
@@ -180,6 +184,7 @@ class Matrix{
 	public function sum($sum){
 		if(!($sum instanceof Matrix)){
 			$sum = new self($sum);
+			$destroy = true;
 		}
 
 		$size = $this->size();
@@ -191,8 +196,12 @@ class Matrix{
 
 		for($c=0;$c<$size[0];$c++){
 			for($r=0;$r<$size[1];$r++){
-				$this->data[$c][$r] = ($this->data[$c][$r] + $sum->get($c+1,$r+1));
+				$this->set($c,$r, $this->data[$c][$r] + $sum->get($c+1,$r+1));
 			}
+		}
+
+		if(isset($destroy)){
+			unset($sum);
 		}
 	}
 
@@ -216,7 +225,7 @@ class Matrix{
 
 		for($c=0;$c<$size[0];$c++){
 			for($r=0;$r<$size[1];$r++){
-				$this->data[$c][$r] = ($this->data[$c][$r] + $sum->get($c+1,$r+1));
+				$this->set($c,$r, $this->data[$c][$r] + $sum->get($c+1,$r+1));
 			}
 		}
 	}

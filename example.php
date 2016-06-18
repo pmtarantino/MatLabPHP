@@ -1,11 +1,10 @@
 <?php
-require_once('MatLabPHP.class.php');
 require_once('linearAlg.class.php');
 
 echo "<pre>";
-$M = new Matrix("[3]");
+$M = new Matrix("[3 2; 1.11 2]");
 $e = Matrix::eye(2);
-$M->mult("[1]");
+$M->sum("[1 1; 1.00 1.00]");
 var_dump($M->get());
 die();
 var_dump($M->get(), $M->size());
