@@ -1,6 +1,7 @@
 <?php
-require_once('simpletest/autorun.php');
+require 'vendor/autoload.php';
 require_once('linearAlg.class.php');
+require 'vendor/simpletest/simpletest/autorun.php';
 
 class TestBasicTypes extends UnitTestCase {
 	function testZeros() {
@@ -49,7 +50,6 @@ class TestBasicTypes extends UnitTestCase {
 		$e = new Matrix('1 2; 3 4');
 		$this->expectException(new PatternExpectation("/not numeric/i"));
 		$e = new Matrix('[1 2; 3 a]');
-
 	}
 }
 ?>
