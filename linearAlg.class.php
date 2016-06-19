@@ -107,9 +107,9 @@ class Matrix{
 		}
 
 		$Zeros = array();
-		for($c=0;$c<$Cols;$c++){
-				for($r=0;$r<$Rows;$r++){
-					$Zeros[$c][$r] = '0';
+		for($r=0;$r<$Rows;$r++){
+			for($c=0;$c<$Cols;$c++){
+					$Zeros[$r][$c] = '0';
 				}
 		}
 
@@ -132,9 +132,9 @@ class Matrix{
 		}
 
 		$Eye = array();
-		for($c=0;$c<$Cols;$c++){
-				for($r=0;$r<$Rows;$r++){
-					$Eye[$c][$r] = ($c == $r)? '1' : '0';
+		for($r=0;$r<$Rows;$r++){
+			for($c=0;$c<$Cols;$c++){
+					$Eye[$r][$c] = ($c == $r)? '1' : '0';
 				}
 		}
 		return new self($Eye);
