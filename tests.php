@@ -36,6 +36,20 @@ class TestBasicTypes extends UnitTestCase {
 		$this->assertTrue($n->get() == array(array(1,2,3)));
 		$n = new Matrix('[1;2;3]');
 		$this->assertTrue($n->get() == array(array(1),array(2),array(3)));
+		$n = new Matrix('[1 2;3 4]');
+		$this->assertTrue($n->get() == array(array(1, 2),array(3 ,4)));
+
+		$this->expectException(new PatternExpectation("/should be the same/i"));
+		$e = new Matrix('[1 2; 3 4 5]');
+		$this->expectException(new PatternExpectation("/bad format/i"));
+		$e = new Matrix('[1 2; 3 4');
+		$this->expectException(new PatternExpectation("/bad format/i"));
+		$e = new Matrix('1 2; 3 4]');
+		$this->expectException(new PatternExpectation("/bad format/i"));
+		$e = new Matrix('1 2; 3 4');
+		$this->expectException(new PatternExpectation("/not numeric/i"));
+		$e = new Matrix('[1 2; 3 a]');
+
 	}
 }
 ?>
