@@ -36,19 +36,43 @@ class Matrix{
 	@param: Number, Vector or Matrix. Ex: 1 or  [1 2 3] or [1 2 ; 3 4]
 	@return: Array of Number, Vector or Matrix to operate in the class.
 	*/
+
+	public static function StringToRow($Vector){
+		$Vector = trim(substr($Vector,1,-1));
+		$Values = explode(" ",$Vector);
+		foreach($Values as $Value){
+			if($Value != ""){
+				if(is_numeric(trim($Value))){
+					$VectorArray[] = floatval(trim($Value));
+				}else{
+					throw new Exception (self::ErrorMsg('NotNum'));
+				}
+			}
+		}
+		return $VectorArray;
+	}
+
+
 	public static function StringToVector($Vector){
 		if(is_array($Vector)){
-			return $Vector;
+			if(is_array($Vector[0])){
+				return $Vector;
+			} else {
+				return array($Vector);
+			}
 		}
 
 		elseif(is_numeric($Vector)){
-			return array($Vector);
+			return array(array($Vector));
 		}
 
 		else{
 			$Vector = trim($Vector);
 
-			if(strpos($Vector,";")){ // If there are a few rows, then it is a matrix
+			if($Vector[0] != "[" || $Vector[strlen($Vector)-1] != "]"){ // Checking good format of [ numbers ]
+				throw new Exception (self::ErrorMsg('BadFormat'));
+			}
+			else {
 				$Rows = explode(";",$Vector);
 				foreach($Rows as $Key => $Row){
 					if($Key == 0){
@@ -56,36 +80,17 @@ class Matrix{
 					}elseif($Key == count($Rows)-1){
 						$Row = substr($Row,0,-1);
 					}
-					$ReturnVector[] = self::StringToVector("[".$Row."]");
+					$Row = str_replace(array('[',']'), '', $Row); // I dont like this.
+					$ReturnVector[] = self::StringToRow("[".$Row."]");
 				}
 				// Array of the Matrix finished. We should check if it is consistent.
 				$Cols = count($ReturnVector[0]);
 				foreach($ReturnVector as $Row){
 					if(count($Row) != $Cols){
-						throw new Exception ($this->ErrorMsg('NotSameColsRows'));
+						throw new Exception (self::ErrorMsg('NotSameColsRows'));
 					}
 				}
 				return $ReturnVector;
-			}
-
-
-			else if($Vector[0] != "[" || $Vector[strlen($Vector)-1] != "]"){ // Checking good format of [ numbers ]
-				throw new Exception ($this->ErrorMsg('BadFormat'));
-			}
-
-			else{
-				$Vector = trim(substr($Vector,1,-1));
-				$Values = explode(" ",$Vector);
-				foreach($Values as $Value){
-					if($Value != ""){
-						if(is_numeric(trim($Value))){
-							$VectorArray[] = floatval(trim($Value));
-						}else{
-							throw new Exception ($this->ErrorMsg('NotNum'));
-						}
-					}
-				}
-				return $VectorArray;
 			}
 		}
 	}

@@ -26,5 +26,16 @@ class TestBasicTypes extends UnitTestCase {
 		$e32 = Matrix::eye(3,2);
 		$this->assertTrue( $e32->get() == array(array(1,0,0),array(0,1,0)) );
 	}
+
+	function testBasicStringToVector(){
+		$n = new Matrix(1);
+		$this->assertTrue($n->get() == array(array(1)));
+		$n = new Matrix('10');
+		$this->assertTrue($n->get() == array(array(10)));
+		$n = new Matrix('[1 2 3]');
+		$this->assertTrue($n->get() == array(array(1,2,3)));
+		$n = new Matrix('[1;2;3]');
+		$this->assertTrue($n->get() == array(array(1),array(2),array(3)));
+	}
 }
 ?>
