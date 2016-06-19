@@ -7,3 +7,6 @@ php:
 
 script:
   - php tests.php
+
+install:
+  - composer install
