@@ -18,7 +18,7 @@ class Matrix{
 	}
 
 	// Throw exceptions with a predefined message.
-	private function ErrorMsg($Msj){
+	private static function ErrorMsg($Msj){
 		$ErrorMsg = array(
 			'BadFormat'					=>	'Bad Format',
 			'NotNum'					=>	'Value in vector is not Numeric',
