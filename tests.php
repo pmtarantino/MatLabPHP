@@ -39,7 +39,7 @@ class TestBasicTypes extends UnitTestCase {
 		$this->assertTrue($n->get() == array(array(1),array(2),array(3)));
 		$n = new Matrix('[1 2;3 4]');
 		$this->assertTrue($n->get() == array(array(1, 2),array(3 ,4)));
-/*
+		/*
 		$this->expectException(new PatternExpectation("/should be the same/i"));
 		$e = new Matrix('[1 2; 3 4 5]');
 		$this->expectException(new PatternExpectation("/bad format/i"));
@@ -63,6 +63,28 @@ class TestBasicTypes extends UnitTestCase {
 		$this->assertTrue($n->get(2) == array(3,4));
 		$n->set(1,1,2);
 		$this->assertTrue($n->get() == array(array(2,2),array(3,4)));
+
+		//// MISSING SIZE ///
+	}
+
+	function testSum(){
+		$n = new Matrix('10');
+		$n->sum(20);
+		$this->assertTrue($n->get(1,1) == 30);
+
+		$n = new Matrix('[1 2 3]');
+		$n->sum('[2 2 2]');
+		$this->assertTrue($n->get() == array(array(3,4,5)) );
+
+		$n = new Matrix('[1 2; 3 4]');
+		$n->sum('[100 100; 1000 1000]');
+		$this->assertTrue($n->get() == array(array(101,102),array(1003,1004)));
+		$n->sum('[100 100; 1000 1000]');
+		$this->assertTrue($n->get() == array(array(201,202),array(2003,2004)));
+
+		$m = Matrix::eye(2,2);
+		$n->sum($m);
+		$this->assertTrue($n->get() == array(array(202,202),array(2003,2005)));
 
 	}
 }

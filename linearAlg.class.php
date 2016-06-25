@@ -167,7 +167,7 @@ class Matrix{
 	}
 
 	public function set($Col, $Row, $val){
-		if(isset($this->data[$Col][$Row])){
+		if(isset($this->data[$Col-1][$Row-1])){
 			$this->data[$Col-1][$Row-1] = floatval($val);
 		} else {
 			self::ErrorMsg('OutRange');
@@ -204,9 +204,9 @@ class Matrix{
 			$this->ErrorMsg('NotSameColsRows');
 		}
 
-		for($c=0;$c<$size[0];$c++){
-			for($r=0;$r<$size[1];$r++){
-				$this->set($c,$r, $this->data[$c][$r] + $sum->get($c+1,$r+1));
+		for($c=1;$c<=$size[0];$c++){
+			for($r=1;$r<=$size[1];$r++){
+				$this->set($c,$r, $this->data[$c-1][$r-1] + $sum->get($c,$r));
 			}
 		}
 
