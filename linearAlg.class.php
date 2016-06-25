@@ -20,10 +20,11 @@ class Matrix{
 	// Throw exceptions with a predefined message.
 	private static function ErrorMsg($Msj){
 		$ErrorMsg = array(
-			'BadFormat'					=>	'Bad Format',
-			'NotNum'					=>	'Value in vector is not Numeric',
-			'NotSameColsRows'			=>	'The cols in each row should be the same',
-			'ArgsNum'					=>	'Arguments must be numeric'
+			'BadFormat' =>	'Bad Format',
+			'NotNum' =>	'Value in vector is not Numeric',
+			'NotSameColsRows' => 'The cols in each row should be the same',
+			'ArgsNum' => 'Arguments must be numeric',
+			'OutRange' => 'Out of range',				
 		);
 
 		throw new Exception($ErrorMsg[$Msj]);
@@ -45,7 +46,7 @@ class Matrix{
 				if(is_numeric(trim($Value))){
 					$VectorArray[] = floatval(trim($Value));
 				}else{
-					throw new Exception (self::ErrorMsg('NotNum'));
+					self::ErrorMsg('NotNum');
 				}
 			}
 		}
@@ -70,7 +71,7 @@ class Matrix{
 			$Vector = trim($Vector);
 
 			if($Vector[0] != "[" || $Vector[strlen($Vector)-1] != "]"){ // Checking good format of [ numbers ]
-				throw new Exception (self::ErrorMsg('BadFormat'));
+				self::ErrorMsg('BadFormat');
 			}
 			else {
 				$Rows = explode(";",$Vector);
@@ -87,7 +88,7 @@ class Matrix{
 				$Cols = count($ReturnVector[0]);
 				foreach($ReturnVector as $Row){
 					if(count($Row) != $Cols){
-						throw new Exception (self::ErrorMsg('NotSameColsRows'));
+						self::ErrorMsg('NotSameColsRows');
 					}
 				}
 				return $ReturnVector;
@@ -108,7 +109,7 @@ class Matrix{
 		$Cols = trim($Cols);
 		
 		if(!is_numeric($Cols) || !is_numeric($Rows)){
-			throw new Exception ($this->ErrorMsg('ArgsNum'));
+			$this->ErrorMsg('ArgsNum');
 		}
 
 		$Zeros = array();
@@ -133,7 +134,7 @@ class Matrix{
 		$Cols = trim($Cols);
 		
 		if(!is_numeric($Cols) || !is_numeric($Rows)){
-			throw new Exception ($this->ErrorMsg('ArgsNum'));
+			$this->ErrorMsg('ArgsNum');
 		}
 
 		$Eye = array();
@@ -156,7 +157,7 @@ class Matrix{
 	public function get($Col=false,$Row=false){
 		if($Col){
 			if($Row){
-				return $this->data[$Col-1][$Row-1];
+				return isset($this->data[$Col-1][$Row-1])? $this->data[$Col-1][$Row-1] : self::ErrorMsg('OutRange');
 			} else{
 				return $this->data[$Col-1];
 			}
@@ -166,7 +167,11 @@ class Matrix{
 	}
 
 	public function set($Col, $Row, $val){
-		$this->data[$Col][$Row] = floatval($val);
+		if(isset($this->data[$Col][$Row])){
+			$this->data[$Col-1][$Row-1] = floatval($val);
+		} else {
+			self::ErrorMsg('OutRange');
+		}
 	}
 
 	/*
