@@ -6,7 +6,6 @@ MatLabPHP
 @description: Using vectors and matrix syntaxis as MatLab to work in PHP.
 @start-date: Sept 2012
 */
-
 		
 
 class Matrix{
@@ -154,21 +153,37 @@ class Matrix{
 	@param: Col and/or row. If not passed, returns the 
 	@return: Array of Numbers, or number if it's just an element.
 	*/
-	public function get($Col=false,$Row=false){
-		if($Col){
-			if($Row){
-				return isset($this->data[$Col-1][$Row-1])? $this->data[$Col-1][$Row-1] : self::ErrorMsg('OutRange');
+	public function get($Row=false,$Col=false){
+		if($Row){
+			if($Col){
+				return isset($this->data[$Row-1][$Col-1])? $this->data[$Row-1][$Col-1] : self::ErrorMsg('OutRange');
 			} else{
-				return $this->data[$Col-1];
+				return $this->data[$Row-1];
 			}
+		} elseif($Col) {
+			// If I am going to return only the column, I have to iterate over the rows.
+			$data = array();
+			$rows = $this->size();
+			for($i=0;$i<$rows[0];$i++){
+				$data[] = $this->data[$i][$Col-1];
+			}
+			return $data;
 		} else {
 			return $this->data;
 		}
 	}
 
-	public function set($Col, $Row, $val){
-		if(isset($this->data[$Col-1][$Row-1])){
-			$this->data[$Col-1][$Row-1] = floatval($val);
+	public function getRow($Row){
+		return $this->get($Row);
+	}
+
+	public function getCol($Col){
+		return $this->get(false, $Col);
+	}
+
+	public function set($Row, $Col, $val){
+		if(isset($this->data[$Row-1][$Col-1])){
+			$this->data[$Row-1][$Col-1] = floatval($val);
 		} else {
 			self::ErrorMsg('OutRange');
 		}
@@ -178,7 +193,7 @@ class Matrix{
 	size
 	@desc: Return quantity of columns and rows
 	@param: None
-	@return: Array(Cols, Rows)
+	@return: Array(Rows, Cols)
 	*/
 	public function size(){
 		$Vector = $this->data;
@@ -204,9 +219,9 @@ class Matrix{
 			$this->ErrorMsg('NotSameColsRows');
 		}
 
-		for($c=1;$c<=$size[0];$c++){
-			for($r=1;$r<=$size[1];$r++){
-				$this->set($c,$r, $this->data[$c-1][$r-1] + $sum->get($c,$r));
+		for($r=1;$r<=$size[0];$r++){
+			for($c=1;$c<=$size[1];$c++){
+				$this->set($r,$c, $this->data[$r-1][$c-1] + $sum->get($r,$c));
 			}
 		}
 
@@ -215,31 +230,83 @@ class Matrix{
 		}
 	}
 
+
 	/*
-	mult
-	@desc: Multiplies the current vector vs the one passed
+	scalar_prod
+	@desc: Calculates the scalar product (dot product, inner product) between this vector and the passed one.
 	@param: Vector to be multiplied
-	@return: Modifies the current instance
+	@return: Return an int
 	*/
-	public function mult($factor){
+
+	public function scalar_prod($factor){
 		if(!($factor instanceof Matrix)){
 			$factor = new self($factor);
+			$destroy = true;		
 		}
 
 		$size = $this->size();
 		$size_b = $factor->size();
 
-		if( $size[0] != $size_b[1] || $size[1] != $size_b[0] ){
+		if( $size[1] != $size_b[1] || $size[0] > 1 || $size_b[0] > 1){
 			$this->ErrorMsg('NotSameColsRows');
 		}
 
-		for($c=0;$c<$size[0];$c++){
-			for($r=0;$r<$size[1];$r++){
-				$this->set($c,$r, $this->data[$c][$r] + $sum->get($c+1,$r+1));
+		$first_vector = $this->getRow(1);
+		$second_vector = $factor->getRow(1);
+
+		$result = 0;
+		for($i=0;$i<$size[1];$i++){
+			$result += $first_vector[$i] * $second_vector[$i];
+		}
+
+		if(isset($destroy)){
+			unset($factor);
+		}
+
+		return $result;
+	}
+
+	/*
+	prod
+	@desc: Multiplies the current vector vs the one passed
+	@param: Vector to be multiplied
+	@return: Return a new instance of the results (diff sizes, we can not use the same)
+	*/
+	public function prod($factor){
+		if(!($factor instanceof Matrix)){
+			$factor = new self($factor);
+			$destroy = true;		
+		}
+
+		$size = $this->size();
+		$size_b = $factor->size();
+
+		if( $size[1] != $size_b[0]){
+			$this->ErrorMsg('NotSameColsRows');
+		}
+
+		$result = Matrix::eye($size_b[1],$size[0]);
+
+		for($r=1;$r<=$size[0];$r++){
+			for($c=1;$c<=$size_b[1];$c++){
+				$row = $this->getRow($r);
+				$col = $factor->getCol($c);
+
+				$scalar_prod = 0;
+				for($i=0;$i<count($row);$i++){
+					$scalar_prod += $row[$i] * $col[$i];
+				}
+
+				$result->set($r,$c,$scalar_prod);
 			}
 		}
+
+		if(isset($destroy)){
+			unset($factor);
+		}
+
+		return $result;
+
 	}
 
 }
-?>
-

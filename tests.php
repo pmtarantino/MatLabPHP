@@ -3,6 +3,8 @@ require 'vendor/autoload.php';
 require_once('linearAlg.class.php');
 require 'vendor/simpletest/simpletest/autorun.php';
 
+// Had to stop testing Exceptions because SimpleTest hasn't a clear way to handle them.
+
 class TestBasicTypes extends UnitTestCase {
 	function testZeros() {
 		$z1 = Matrix::zeros(1);
@@ -61,10 +63,22 @@ class TestBasicTypes extends UnitTestCase {
 		$n = new Matrix('[1 2;3 4]');
 		$this->assertTrue($n->get(2,1) == 3);
 		$this->assertTrue($n->get(2) == array(3,4));
+		$this->assertTrue($n->getRow(2) == array(3,4));
+		$this->assertTrue($n->getCol(1) == array(1,3));
+		$this->assertTrue($n->getCol(2) == array(2,4));
 		$n->set(1,1,2);
 		$this->assertTrue($n->get() == array(array(2,2),array(3,4)));
+	}
 
-		//// MISSING SIZE ///
+	function testSize(){
+		$n = new Matrix('10');
+		$this->assertTrue($n->size() == array(1,1));
+		$n = new Matrix('[1 2 3]');
+		$this->assertTrue($n->size() == array(1,3));
+		$n = new Matrix('[1 2;3 4]');
+		$this->assertTrue($n->size() == array(2,2));
+		$n = new Matrix('[1;3]');
+		$this->assertTrue($n->size() == array(2,1));
 	}
 
 	function testSum(){
@@ -86,6 +100,30 @@ class TestBasicTypes extends UnitTestCase {
 		$n->sum($m);
 		$this->assertTrue($n->get() == array(array(202,202),array(2003,2005)));
 
+	}
+
+	function testScalarProd(){
+		$n = new Matrix('[1 2 3]');
+		$this->assertTrue($n->scalar_prod('[5 6 7]') == 38);
+		$this->assertTrue($n->scalar_prod('[1 1 1]') == 6);
+		$this->assertTrue($n->scalar_prod('[0 0 0]') == 0);
+		$this->assertTrue($n->scalar_prod('[100 100 100]') == 600);
+	}
+
+	function testProd(){
+		// For same size
+		$n = new Matrix('[1 2; 3 4]');
+		// $r = $n->prod(Matrix::eye(2,2));
+		// $this->assertTrue($r->get() == $n->get());
+		// $r = $n->prod('[1 2; 3 4]');
+		// $this->assertTrue($r->get() == array(array(7,10),array(15,22)));
+		// $r = $n->prod('[77 23; 0 12]');
+		// $this->assertTrue($r->get() == array(array(77,47),array(231,117)));
+		// $r = $n->prod(Matrix::zeros(2,2));
+		// $this->assertTrue($r->get() == array(array(0,0),array(0,0)));
+		// Dif size
+		$r = $n->prod('[16;19]');
+		$this->assertTrue($r->get() == array(array(54),array(124)));
 	}
 }
 ?>
